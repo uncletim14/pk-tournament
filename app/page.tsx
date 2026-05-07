@@ -182,4 +182,4 @@ export default function TournamentRegistration() {
       </div>
     </main>
   );
-}
+} 
