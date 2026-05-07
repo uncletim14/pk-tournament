@@ -125,4 +125,61 @@ export default function TournamentRegistration() {
               <div className="space-y-4">
                 <div>
                   <label className="text-xs text-slate-500 ml-1">選手姓名</label>
-                  <input type="text" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value
+                  <input type="text" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="請輸入姓名" className="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 focus:ring-2 focus:ring-orange-500 outline-none" />
+                </div>
+                <div>
+                  <label className="text-xs text-slate-500 ml-1">聯絡電話</label>
+                  <input type="tel" required value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} placeholder="僅供主辦方聯絡" className="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 focus:ring-2 focus:ring-orange-500 outline-none" />
+                </div>
+                <div>
+                  <label className="text-xs text-slate-500 ml-1">修改密碼 (4 位數)</label>
+                  <input type="password" maxLength={4} required value={formData.edit_code} onChange={e => setFormData({...formData, edit_code: e.target.value})} placeholder="自助取消用" className="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 focus:ring-2 focus:ring-orange-500 outline-none" />
+                </div>
+                <button type="submit" className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white font-black py-4 rounded-xl hover:scale-[1.02] transition-transform shadow-lg">
+                  立即報名參加
+                </button>
+                <p className="text-[10px] text-slate-500 text-center mt-2">＊您的電話與密碼將受到加密保護，不會公開顯示。</p>
+              </div>
+            </form>
+          </div>
+
+          {/* 右側：名單顯示 */}
+          <div className="md:col-span-3">
+            <div className="flex justify-between items-end mb-4">
+              <h2 className="text-xl font-bold border-l-4 border-orange-500 pl-3">目前報名清單</h2>
+              <span className="text-sm text-slate-400">名額：{currentList.length} / {currentCategoryInfo?.max}</span>
+            </div>
+
+            {isLoading ? (
+              <div className="text-center py-20 text-slate-500 animate-pulse">讀取名單中...</div>
+            ) : (
+              <div className="space-y-3">
+                {currentList.length === 0 && (
+                  <div className="bg-slate-800/50 border border-dashed border-slate-700 p-10 rounded-2xl text-center text-slate-500">
+                    目前尚無選手報名，快來當第一個！
+                  </div>
+                )}
+                {currentList.map((p, index) => (
+                  <div key={p.id} className="bg-slate-800 border border-slate-700 p-4 rounded-xl flex justify-between items-center group hover:border-orange-500/50 transition-colors">
+                    <div className="flex items-center gap-4">
+                      <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${index < (currentCategoryInfo?.max || 16) ? 'bg-green-500/20 text-green-400' : 'bg-orange-500/20 text-orange-400'}`}>
+                        {index < (currentCategoryInfo?.max || 16) ? index + 1 : '補'}
+                      </span>
+                      <span className="font-bold text-lg">{p.name}</span>
+                    </div>
+                    <button 
+                      onClick={() => handleCancel(p)}
+                      className="text-xs text-slate-500 hover:text-red-400 border border-slate-700 hover:border-red-400/50 px-3 py-1 rounded-lg transition-all"
+                    >
+                      取消
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </main>
+  );
+}
