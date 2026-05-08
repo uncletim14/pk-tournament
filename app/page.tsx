@@ -117,7 +117,7 @@ export default function TournamentRegistration() {
 
         <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
           {/* 左側：報名表單 */}
-          <div className="md:col-span-2">
+          <div className="mgit push origin maind:col-span-2">
             <form onSubmit={handleRegister} className="bg-slate-800 p-6 rounded-2xl border border-slate-700 sticky top-8">
               <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
                 <span className="text-orange-500 text-2xl">✍️</span> 填寫報名表
