@@ -12,12 +12,13 @@ type Participant = {
   id: number;
   name: string;
   category: string;
-  dupr: string;      // 加入 DUPR 型別
+  dupr: string;
   edit_code: string;
   created_at: string;
 };
 
 export default function TournamentRegistration() {
+  // 比賽組別設定 (每組上限 16 人)
   const categories = [
     { id: 'cat1', label: '3.29 以下 (入門組)', max: 16 },
     { id: 'cat2', label: '3.3 - 3.9 (中階組)', max: 16 },
@@ -26,14 +27,12 @@ export default function TournamentRegistration() {
   ];
 
   const [activeTab, setActiveTab] = useState(categories[0].label);
-  // 表單資料：拿掉電話，加入 DUPR
   const [formData, setFormData] = useState({ name: '', dupr: '', edit_code: '' });
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetchParticipants();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchParticipants = async () => {
@@ -43,7 +42,6 @@ export default function TournamentRegistration() {
     setIsLoading(false);
   };
 
-  // 報名邏輯
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.edit_code.length !== 4) { alert("請設定 4 位數修改密碼"); return; }
@@ -52,27 +50,28 @@ export default function TournamentRegistration() {
     const categoryList = participants.filter(p => p.category === activeTab);
     const currentMax = categories.find(c => c.label === activeTab)?.max || 16;
 
+    // 備取提醒邏輯
     if (categoryList.length >= currentMax) {
-      if (!window.confirm("該組別已滿，確定要排入候補嗎？")) return;
+      const waitlistNum = categoryList.length - currentMax + 1;
+      if (!window.confirm(`目前正取名額已滿，報名後將列為「備取第 ${waitlistNum} 位」，確定要報名嗎？`)) return;
     }
 
     const { error } = await supabase.from('tournament_participants').insert([{
       name: formData.name,
       category: activeTab,
-      dupr: formData.dupr,         // 將 DUPR 送進資料庫
+      dupr: formData.dupr,
       edit_code: formData.edit_code
     }]);
 
     if (!error) {
       alert("報名成功！");
-      setFormData({ name: '', dupr: '', edit_code: '' }); // 清空表單
+      setFormData({ name: '', dupr: '', edit_code: '' });
       fetchParticipants();
     } else {
       alert("報名失敗：" + error.message);
     }
   };
 
-  // 密碼自助取消邏輯 (原汁原味保留)
   const handleCancel = async (participant: Participant) => {
     const inputCode = window.prompt("請輸入報名時設定的 4 碼密碼以取消報名：");
     if (inputCode === null) return;
@@ -98,7 +97,7 @@ export default function TournamentRegistration() {
       <div className="max-w-3xl mx-auto">
         <header className="text-center mb-10">
           <h1 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 mb-2">
-            七賢匹克球積分賽 報名系統
+            七賢國小匹克球積分賽 報名系統
           </h1>
           <p className="text-slate-400">專業積分、熱血對戰，展現您的最強實力！</p>
         </header>
@@ -120,9 +119,7 @@ export default function TournamentRegistration() {
           {/* 左側：報名表單 */}
           <div className="md:col-span-2">
             <form onSubmit={handleRegister} className="bg-slate-800 p-6 rounded-2xl border border-slate-700 sticky top-8">
-              <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                <span className="text-orange-500 text-2xl">✍️</span> 填寫報名表
-              </h2>
+              <h2 className="text-xl font-bold mb-4 flex items-center gap-2">✍️ 填寫報名表</h2>
               <div className="space-y-4">
                 <div>
                   <label className="text-xs text-slate-500 ml-1">選手姓名</label>
@@ -139,7 +136,6 @@ export default function TournamentRegistration() {
                 <button type="submit" className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white font-black py-4 rounded-xl hover:scale-[1.02] transition-transform shadow-lg">
                   立即報名參加
                 </button>
-                <p className="text-[10px] text-slate-500 text-center mt-2">＊您的密碼將受到加密保護，不會公開顯示。</p>
               </div>
             </form>
           </div>
@@ -148,7 +144,7 @@ export default function TournamentRegistration() {
           <div className="md:col-span-3">
             <div className="flex justify-between items-end mb-4">
               <h2 className="text-xl font-bold border-l-4 border-orange-500 pl-3">目前報名清單</h2>
-              <span className="text-sm text-slate-400">名額：{currentList.length} / {currentCategoryInfo?.max}</span>
+              <span className="text-sm text-slate-400">正取名額剩餘：{Math.max(0, (currentCategoryInfo?.max || 16) - currentList.length)}</span>
             </div>
 
             {isLoading ? (
@@ -156,30 +152,28 @@ export default function TournamentRegistration() {
             ) : (
               <div className="space-y-3">
                 {currentList.length === 0 && (
-                  <div className="bg-slate-800/50 border border-dashed border-slate-700 p-10 rounded-2xl text-center text-slate-500">
-                    目前尚無選手報名，快來當第一個！
-                  </div>
+                  <div className="bg-slate-800/50 border border-dashed border-slate-700 p-10 rounded-2xl text-center text-slate-500">尚無選手報名</div>
                 )}
-                {currentList.map((p, index) => (
-                  <div key={p.id} className="bg-slate-800 border border-slate-700 p-4 rounded-xl flex justify-between items-center group hover:border-orange-500/50 transition-colors">
-                    <div className="flex items-center gap-4">
-                      <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${index < (currentCategoryInfo?.max || 16) ? 'bg-green-500/20 text-green-400' : 'bg-orange-500/20 text-orange-400'}`}>
-                        {index < (currentCategoryInfo?.max || 16) ? index + 1 : '補'}
-                      </span>
-                      <div className="flex flex-col">
-                        <span className="font-bold text-lg">{p.name}</span>
-                        {/* 顯示 DUPR ID */}
-                        <span className="text-xs text-orange-400">DUPR: {p.dupr}</span>
+                {currentList.map((p, index) => {
+                  const isWaitlist = index >= (currentCategoryInfo?.max || 16);
+                  return (
+                    <div key={p.id} className="bg-slate-800 border border-slate-700 p-4 rounded-xl flex justify-between items-center group hover:border-orange-500/50 transition-colors">
+                      <div className="flex items-center gap-4">
+                        <div className="flex flex-col items-center">
+                           <span className={`text-[10px] font-bold px-1 rounded ${isWaitlist ? 'bg-orange-500/20 text-orange-400' : 'bg-green-500/20 text-green-400'}`}>
+                             {isWaitlist ? '備取' : '正取'}
+                           </span>
+                           <span className="font-mono text-sm">{isWaitlist ? index - 15 : index + 1}</span>
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="font-bold text-lg">{p.name}</span>
+                          <span className="text-xs text-orange-400/70">DUPR: {p.dupr}</span>
+                        </div>
                       </div>
+                      <button onClick={() => handleCancel(p)} className="text-xs text-slate-500 hover:text-red-400 border border-slate-700 hover:border-red-400/50 px-3 py-1 rounded-lg">取消</button>
                     </div>
-                    <button 
-                      onClick={() => handleCancel(p)}
-                      className="text-xs text-slate-500 hover:text-red-400 border border-slate-700 hover:border-red-400/50 px-3 py-1 rounded-lg transition-all"
-                    >
-                      取消
-                    </button>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
