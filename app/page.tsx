@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
-// 初始化 Supabase
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
@@ -31,6 +30,8 @@ export default function TournamentRegistration() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // 🌟 這裡新增：讓瀏覽器分頁顯示正確名稱
+    document.title = "七賢國小匹克球積分賽";
     fetchParticipants();
   }, []);
 
@@ -46,16 +47,15 @@ export default function TournamentRegistration() {
     if (formData.edit_code.length !== 4) { alert("請設定 4 位數修改密碼"); return; }
     if (!formData.dupr) { alert("請輸入 DUPR ID"); return; }
 
-    // --- 🕵️‍♂️ 新增：防重複姓名偵測邏輯 ---
+    // 🕵️‍♂️ 防重複姓名偵測
     const isDuplicate = participants.some(
       p => p.name.trim() === formData.name.trim() && p.category === activeTab
     );
     
     if (isDuplicate) {
-      alert(`「${formData.name}」已經在【${activeTab}】的報名名單中囉，請勿重複報名！`);
+      alert(`「${formData.name}」已經在【${activeTab}】名單中囉，請勿重複報名！`);
       return;
     }
-    // ---------------------------------
 
     const categoryList = participants.filter(p => p.category === activeTab);
     const currentMax = categories.find(c => c.label === activeTab)?.max || 16;
