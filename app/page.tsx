@@ -12,13 +12,12 @@ type Participant = {
   id: number;
   name: string;
   category: string;
-  phone: string;
+  dupr: string;      // 加入 DUPR 型別
   edit_code: string;
   created_at: string;
 };
 
 export default function TournamentRegistration() {
-  // 比賽組別設定
   const categories = [
     { id: 'cat1', label: '3.29 以下 (入門組)', max: 16 },
     { id: 'cat2', label: '3.3 - 3.9 (中階組)', max: 16 },
@@ -27,7 +26,8 @@ export default function TournamentRegistration() {
   ];
 
   const [activeTab, setActiveTab] = useState(categories[0].label);
-  const [formData, setFormData] = useState({ name: '', phone: '', edit_code: '' });
+  // 表單資料：拿掉電話，加入 DUPR
+  const [formData, setFormData] = useState({ name: '', dupr: '', edit_code: '' });
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -47,6 +47,7 @@ export default function TournamentRegistration() {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.edit_code.length !== 4) { alert("請設定 4 位數修改密碼"); return; }
+    if (!formData.dupr) { alert("請輸入 DUPR ID"); return; }
 
     const categoryList = participants.filter(p => p.category === activeTab);
     const currentMax = categories.find(c => c.label === activeTab)?.max || 16;
@@ -57,21 +58,21 @@ export default function TournamentRegistration() {
 
     const { error } = await supabase.from('tournament_participants').insert([{
       name: formData.name,
-      phone: formData.phone,
       category: activeTab,
+      dupr: formData.dupr,         // 將 DUPR 送進資料庫
       edit_code: formData.edit_code
     }]);
 
     if (!error) {
       alert("報名成功！");
-      setFormData({ name: '', phone: '', edit_code: '' });
+      setFormData({ name: '', dupr: '', edit_code: '' }); // 清空表單
       fetchParticipants();
     } else {
       alert("報名失敗：" + error.message);
     }
   };
 
-  // 自助取消邏輯
+  // 密碼自助取消邏輯 (原汁原味保留)
   const handleCancel = async (participant: Participant) => {
     const inputCode = window.prompt("請輸入報名時設定的 4 碼密碼以取消報名：");
     if (inputCode === null) return;
@@ -128,8 +129,8 @@ export default function TournamentRegistration() {
                   <input type="text" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="請輸入姓名" className="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 focus:ring-2 focus:ring-orange-500 outline-none" />
                 </div>
                 <div>
-                  <label className="text-xs text-slate-500 ml-1">聯絡電話</label>
-                  <input type="tel" required value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} placeholder="僅供主辦方聯絡" className="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 focus:ring-2 focus:ring-orange-500 outline-none" />
+                  <label className="text-xs text-slate-500 ml-1">DUPR ID</label>
+                  <input type="text" required value={formData.dupr} onChange={e => setFormData({...formData, dupr: e.target.value})} placeholder="請輸入 DUPR 帳號" className="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 focus:ring-2 focus:ring-orange-500 outline-none" />
                 </div>
                 <div>
                   <label className="text-xs text-slate-500 ml-1">修改密碼 (4 位數)</label>
@@ -138,7 +139,7 @@ export default function TournamentRegistration() {
                 <button type="submit" className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white font-black py-4 rounded-xl hover:scale-[1.02] transition-transform shadow-lg">
                   立即報名參加
                 </button>
-                <p className="text-[10px] text-slate-500 text-center mt-2">＊您的電話與密碼將受到加密保護，不會公開顯示。</p>
+                <p className="text-[10px] text-slate-500 text-center mt-2">＊您的密碼將受到加密保護，不會公開顯示。</p>
               </div>
             </form>
           </div>
@@ -165,7 +166,11 @@ export default function TournamentRegistration() {
                       <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${index < (currentCategoryInfo?.max || 16) ? 'bg-green-500/20 text-green-400' : 'bg-orange-500/20 text-orange-400'}`}>
                         {index < (currentCategoryInfo?.max || 16) ? index + 1 : '補'}
                       </span>
-                      <span className="font-bold text-lg">{p.name}</span>
+                      <div className="flex flex-col">
+                        <span className="font-bold text-lg">{p.name}</span>
+                        {/* 顯示 DUPR ID */}
+                        <span className="text-xs text-orange-400">DUPR: {p.dupr}</span>
+                      </div>
                     </div>
                     <button 
                       onClick={() => handleCancel(p)}
