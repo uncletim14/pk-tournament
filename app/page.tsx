@@ -18,7 +18,6 @@ type Participant = {
 };
 
 export default function TournamentRegistration() {
-  // 比賽組別設定 (每組上限 16 人)
   const categories = [
     { id: 'cat1', label: '3.29 以下 (入門組)', max: 16 },
     { id: 'cat2', label: '3.3 - 3.9 (中階組)', max: 16 },
@@ -47,17 +46,27 @@ export default function TournamentRegistration() {
     if (formData.edit_code.length !== 4) { alert("請設定 4 位數修改密碼"); return; }
     if (!formData.dupr) { alert("請輸入 DUPR ID"); return; }
 
+    // --- 🕵️‍♂️ 新增：防重複姓名偵測邏輯 ---
+    const isDuplicate = participants.some(
+      p => p.name.trim() === formData.name.trim() && p.category === activeTab
+    );
+    
+    if (isDuplicate) {
+      alert(`「${formData.name}」已經在【${activeTab}】的報名名單中囉，請勿重複報名！`);
+      return;
+    }
+    // ---------------------------------
+
     const categoryList = participants.filter(p => p.category === activeTab);
     const currentMax = categories.find(c => c.label === activeTab)?.max || 16;
 
-    // 備取提醒邏輯
     if (categoryList.length >= currentMax) {
       const waitlistNum = categoryList.length - currentMax + 1;
       if (!window.confirm(`目前正取名額已滿，報名後將列為「備取第 ${waitlistNum} 位」，確定要報名嗎？`)) return;
     }
 
     const { error } = await supabase.from('tournament_participants').insert([{
-      name: formData.name,
+      name: formData.name.trim(),
       category: activeTab,
       dupr: formData.dupr,
       edit_code: formData.edit_code
@@ -102,7 +111,6 @@ export default function TournamentRegistration() {
           <p className="text-slate-400">專業積分、熱血對戰，展現您的最強實力！</p>
         </header>
 
-        {/* 組別切換 */}
         <div className="flex gap-2 mb-8 overflow-x-auto pb-2 scrollbar-hide">
           {categories.map((cat) => (
             <button
@@ -116,7 +124,6 @@ export default function TournamentRegistration() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
-          {/* 左側：報名表單 */}
           <div className="md:col-span-2">
             <form onSubmit={handleRegister} className="bg-slate-800 p-6 rounded-2xl border border-slate-700 sticky top-8">
               <h2 className="text-xl font-bold mb-4 flex items-center gap-2">✍️ 填寫報名表</h2>
@@ -140,7 +147,6 @@ export default function TournamentRegistration() {
             </form>
           </div>
 
-          {/* 右側：名單顯示 */}
           <div className="md:col-span-3">
             <div className="flex justify-between items-end mb-4">
               <h2 className="text-xl font-bold border-l-4 border-orange-500 pl-3">目前報名清單</h2>
@@ -170,7 +176,7 @@ export default function TournamentRegistration() {
                           <span className="text-xs text-orange-400/70">DUPR: {p.dupr}</span>
                         </div>
                       </div>
-                      <button onClick={() => handleCancel(p)} className="text-xs text-slate-500 hover:text-red-400 border border-slate-700 hover:border-red-400/50 px-3 py-1 rounded-lg">取消</button>
+                      <button onClick={() => handleCancel(p)} className="text-xs text-slate-500 hover:text-red-400 border border-slate-700 hover:border-red-400/50 px-3 py-1 rounded-lg transition-all">取消</button>
                     </div>
                   );
                 })}
