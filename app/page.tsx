@@ -115,11 +115,11 @@ export default function TournamentRegistration() {
           <h1 className="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 mb-4 tracking-tighter">
             七賢國小匹克球積分賽
           </h1>
-          <p className="text-slate-400 text-base md:text-lg">專業積分、熱血對戰，展現您的最強實力！</p>
+          <p className="text-slate-400 text-base md:text-lg tracking-wide font-medium">專業積分、熱血對戰，展現您的最強實力！</p>
         </header>
 
         {/* 類別分頁 */}
-        <div className="relative mb-8 group">
+        <div className="relative mb-10 group">
           <div className="flex gap-2 overflow-x-auto pb-3 scrollbar-hide snap-x">
             {categories.map((cat) => (
               <button
@@ -137,16 +137,16 @@ export default function TournamentRegistration() {
           </div>
         </div>
 
-        <div className="flex flex-col md:grid md:grid-cols-5 gap-8">
+        <div className="flex flex-col md:grid md:grid-cols-5 gap-10">
           
           {/* 報名清單區域 */}
           <div className="md:col-span-3 order-1 md:order-2">
             <div className="flex justify-between items-end mb-6 px-1">
               <h2 className="text-2xl md:text-3xl font-bold flex items-center gap-3">
-                <span className="w-2 h-8 bg-orange-500 rounded-full"></span>
+                <span className="w-2.5 h-8 bg-orange-500 rounded-full"></span>
                 目前報名清單
               </h2>
-              <span className="text-sm text-slate-400 font-medium bg-slate-800 px-3 py-1 rounded-lg">
+              <span className="text-sm text-slate-400 font-bold bg-slate-800 px-4 py-1.5 rounded-xl border border-slate-700">
                 正取剩餘：{Math.max(0, maxLimit - currentList.length)}
               </span>
             </div>
@@ -158,35 +158,33 @@ export default function TournamentRegistration() {
             ) : (
               <div className="space-y-4">
                 {currentList.length === 0 ? (
-                  <div className="bg-slate-800/50 border-2 border-dashed border-slate-700 p-16 rounded-3xl text-center text-slate-500 text-xl font-bold">
+                  <div className="bg-slate-800/50 border-2 border-dashed border-slate-700 p-20 rounded-[2rem] text-center text-slate-600 text-xl font-bold">
                     尚無選手報名，快來搶頭香！
                   </div>
                 ) : (
                   currentList.map((p, index) => {
                     const isWaitlist = index >= maxLimit;
-                    const displayIndex = isWaitlist ? index - maxLimit + 1 : index + 1;
                     return (
-                      <div key={p.id} className="bg-slate-800 border-2 border-slate-700/50 p-6 rounded-3xl flex justify-between items-center group hover:bg-slate-800/80 transition-all active:scale-[0.99] shadow-xl">
-                        <div className="flex items-center gap-6">
-                          {/* 正取/備取 狀態與編號 - 已加大 */}
-                          <div className={`w-16 h-16 rounded-2xl flex flex-col items-center justify-center shrink-0 ${
+                      <div key={p.id} className="bg-slate-800 border-2 border-slate-700/50 p-5 md:p-6 rounded-[1.5rem] flex justify-between items-center group hover:bg-slate-800/90 transition-all active:scale-[0.99] shadow-xl">
+                        <div className="flex items-center gap-5 md:gap-8">
+                          {/* 狀態標籤 - 改為橫向純文字 [正取] 或 [備取] */}
+                          <div className={`px-5 py-3 rounded-xl flex items-center justify-center shrink-0 min-w-[80px] ${
                             isWaitlist ? 'bg-amber-500/20 text-amber-500' : 'bg-green-500/20 text-green-500'
                           }`}>
-                            <span className="text-lg font-black leading-none">{isWaitlist ? '備' : '正'}</span>
-                            <span className="text-2xl font-mono font-bold leading-none mt-1">{displayIndex}</span>
+                            <span className="text-xl md:text-2xl font-black tracking-widest">{isWaitlist ? '備取' : '正取'}</span>
                           </div>
                           
                           {/* 選手資訊 */}
                           <div>
-                            <div className="font-black text-slate-100 text-xl md:text-2xl mb-1">{p.name}</div>
-                            <div className="text-sm text-slate-500 font-bold tracking-widest">DUPR: {p.dupr}</div>
+                            <div className="font-black text-slate-100 text-2xl md:text-3xl mb-1">{p.name}</div>
+                            <div className="text-xs md:text-sm text-slate-500 font-bold tracking-[0.2em] uppercase">DUPR: {p.dupr}</div>
                           </div>
                         </div>
 
-                        {/* 取消按鈕 - 已加大 */}
+                        {/* 取消按鈕 */}
                         <button 
                           onClick={() => handleCancel(p)} 
-                          className="px-6 py-3 rounded-2xl text-lg font-black text-slate-500 border-2 border-slate-700 hover:text-red-400 hover:border-red-400/50 hover:bg-red-500/5 transition-all active:scale-95"
+                          className="px-5 py-3 md:px-6 md:py-4 rounded-xl text-lg md:text-xl font-black text-slate-500 border-2 border-slate-700 hover:text-red-400 hover:border-red-400/50 hover:bg-red-500/5 transition-all active:scale-95 shrink-0"
                         >
                           取消
                         </button>
@@ -200,36 +198,36 @@ export default function TournamentRegistration() {
 
           {/* 報名表單區域 */}
           <div className="md:col-span-2 order-2 md:order-1">
-            <form onSubmit={handleRegister} className="bg-slate-800 p-8 rounded-[2rem] border-2 border-slate-700 shadow-2xl md:sticky md:top-8 overflow-hidden">
+            <form onSubmit={handleRegister} className="bg-slate-800 p-8 rounded-[2.5rem] border-2 border-slate-700 shadow-2xl md:sticky md:top-8 overflow-hidden">
               <h2 className="text-2xl font-black mb-8 flex items-center gap-3">
                 ✍️ 填寫報名
               </h2>
               
               <div className="space-y-6">
                 <div>
-                  <label className="text-sm font-black text-slate-400 ml-1 mb-2 block tracking-wider">選手姓名</label>
+                  <label className="text-sm font-black text-slate-400 ml-1 mb-2 block tracking-wider uppercase">選手姓名</label>
                   <input 
                     type="text" 
                     required 
                     value={formData.name} 
                     onChange={e => setFormData({...formData, name: e.target.value})} 
                     placeholder="請輸入真實姓名" 
-                    className="w-full bg-slate-900 border-2 border-slate-700 rounded-2xl px-5 py-4 focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 outline-none transition-all text-lg font-bold" 
+                    className="w-full bg-slate-900 border-2 border-slate-700 rounded-2xl px-6 py-4 focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 outline-none transition-all text-xl font-bold" 
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-black text-slate-400 ml-1 mb-2 block tracking-wider">DUPR ID</label>
+                  <label className="text-sm font-black text-slate-400 ml-1 mb-2 block tracking-wider uppercase">DUPR ID / 數值</label>
                   <input 
                     type="text" 
                     required 
                     value={formData.dupr} 
                     onChange={e => setFormData({...formData, dupr: e.target.value})} 
-                    placeholder="請輸入 DUPR 數值或 ID" 
-                    className="w-full bg-slate-900 border-2 border-slate-700 rounded-2xl px-5 py-4 focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 outline-none transition-all text-lg font-bold" 
+                    placeholder="例如: 3.52" 
+                    className="w-full bg-slate-900 border-2 border-slate-700 rounded-2xl px-6 py-4 focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 outline-none transition-all text-xl font-bold" 
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-black text-slate-400 ml-1 mb-2 block tracking-wider">設定 4 碼密碼 (取消用)</label>
+                  <label className="text-sm font-black text-slate-400 ml-1 mb-2 block tracking-wider uppercase">設定 4 碼密碼</label>
                   <input 
                     type="password" 
                     maxLength={4} 
@@ -237,16 +235,16 @@ export default function TournamentRegistration() {
                     required 
                     value={formData.edit_code} 
                     onChange={e => setFormData({...formData, edit_code: e.target.value})} 
-                    placeholder="例如: 1234" 
-                    className="w-full bg-slate-900 border-2 border-slate-700 rounded-2xl px-5 py-4 focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 outline-none transition-all text-xl tracking-[0.5em] font-mono font-bold" 
+                    placeholder="自助取消用" 
+                    className="w-full bg-slate-900 border-2 border-slate-700 rounded-2xl px-6 py-4 focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 outline-none transition-all text-2xl tracking-[0.4em] font-mono font-bold" 
                   />
                 </div>
                 
                 <button 
                   type="submit" 
-                  className="w-full bg-gradient-to-br from-orange-500 to-red-600 text-white font-black py-5 rounded-2xl hover:brightness-110 active:scale-95 transition-all shadow-xl shadow-orange-900/40 text-xl"
+                  className="w-full bg-gradient-to-br from-orange-500 to-red-600 text-white font-black py-5 rounded-2xl hover:brightness-110 active:scale-95 transition-all shadow-xl shadow-orange-900/40 text-2xl mt-4"
                 >
-                  確認報名參加
+                  確認報名
                 </button>
               </div>
             </form>
@@ -255,8 +253,8 @@ export default function TournamentRegistration() {
         </div>
       </div>
       
-      <footer className="mt-20 pb-10 text-center">
-        <p className="text-slate-600 text-sm font-bold tracking-widest uppercase">七賢國小匹克球積分賽 • KAOHSIUNG PICKLEBALL</p>
+      <footer className="mt-24 pb-12 text-center">
+        <p className="text-slate-600 text-sm font-black tracking-[0.3em] uppercase">七賢國小匹克球積分賽 • KAOHSIUNG PICKLEBALL</p>
       </footer>
     </main>
   );
