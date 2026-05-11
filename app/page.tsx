@@ -18,10 +18,10 @@ type Participant = {
 
 export default function TournamentRegistration() {
   const categories = [
-    { id: 'cat1', label: '3.29 以下 (入門組)', max: 16 },
-    { id: 'cat2', label: '3.3 - 3.9 (中階組)', max: 16 },
-    { id: 'cat3', label: '4.0 以上 (菁英組)', max: 16 },
-    { id: 'cat4', label: '女性專場', max: 16 },
+    { id: 'cat1', label: '3.29 以下 (入門組)', max: 5 }, // 🌟 已修正為 5 人
+    { id: 'cat2', label: '3.3 - 3.9 (中階組)', max: 5 },  // 🌟 已修正為 5 人
+    { id: 'cat3', label: '4.0 以上 (菁英組)', max: 5 },  // 🌟 已修正為 5 人
+    { id: 'cat4', label: '女性專場', max: 5 },         // 🌟 已修正為 5 人
   ];
 
   const [activeTab, setActiveTab] = useState(categories[0].label);
@@ -33,7 +33,6 @@ export default function TournamentRegistration() {
     document.title = "七賢國小匹克球積分賽";
     fetchParticipants();
 
-    // 🌟 額外加分：開啟即時同步功能
     const channel = supabase
       .channel('schema-db-changes')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'tournament_participants' }, fetchParticipants)
@@ -64,7 +63,7 @@ export default function TournamentRegistration() {
     }
 
     const categoryList = participants.filter(p => p.category === activeTab);
-    const currentMax = categories.find(c => c.label === activeTab)?.max || 16;
+    const currentMax = categories.find(c => c.label === activeTab)?.max || 5;
 
     if (categoryList.length >= currentMax) {
       const waitlistNum = categoryList.length - currentMax + 1;
@@ -106,13 +105,12 @@ export default function TournamentRegistration() {
 
   const currentList = participants.filter(p => p.category === activeTab);
   const currentCategoryInfo = categories.find(c => c.label === activeTab);
-  const maxLimit = currentCategoryInfo?.max || 16;
+  const maxLimit = currentCategoryInfo?.max || 5;
 
   return (
     <main className="min-h-screen bg-slate-900 p-4 md:p-8 font-sans text-slate-100">
       <div className="max-w-4xl mx-auto">
         
-        {/* Header Section */}
         <header className="text-center mb-8 md:mb-12">
           <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 mb-3 tracking-tighter">
             七賢國小匹克球積分賽
@@ -120,7 +118,6 @@ export default function TournamentRegistration() {
           <p className="text-slate-400 text-sm md:text-base">專業積分、熱血對戰，展現您的最強實力！</p>
         </header>
 
-        {/* Category Tabs - 手機版橫向滑動優化 */}
         <div className="relative mb-8 group">
           <div className="flex gap-2 overflow-x-auto pb-3 scrollbar-hide snap-x">
             {categories.map((cat) => (
@@ -137,14 +134,11 @@ export default function TournamentRegistration() {
               </button>
             ))}
           </div>
-          {/* 漸層遮罩提醒有更多內容 */}
           <div className="absolute right-0 top-0 h-full w-12 bg-gradient-to-l from-slate-900 pointer-events-none md:hidden" />
         </div>
 
-        {/* Main Grid - 手機版改為單欄，且名單優先於表單 */}
         <div className="flex flex-col md:grid md:grid-cols-5 gap-8">
           
-          {/* 左側：名單顯示 (在手機版顯示在上面，方便查看) */}
           <div className="md:col-span-3 order-1 md:order-2">
             <div className="flex justify-between items-end mb-4 px-1">
               <h2 className="text-lg md:text-xl font-bold flex items-center gap-2">
@@ -173,14 +167,12 @@ export default function TournamentRegistration() {
                     return (
                       <div key={p.id} className="bg-slate-800 border border-slate-700/50 p-4 rounded-2xl flex justify-between items-center group hover:bg-slate-800/80 transition-all active:scale-[0.99]">
                         <div className="flex items-center gap-4">
-                          {/* 序號方塊 */}
                           <div className={`w-10 h-10 rounded-xl flex flex-col items-center justify-center shrink-0 ${
                             isWaitlist ? 'bg-amber-500/10 text-amber-500' : 'bg-green-500/10 text-green-500'
                           }`}>
                             <span className="text-[10px] font-black leading-none">{isWaitlist ? '備' : '正'}</span>
                             <span className="text-sm font-mono font-bold leading-none mt-0.5">{displayIndex}</span>
                           </div>
-                          {/* 選手資訊 */}
                           <div>
                             <div className="font-bold text-slate-100 text-base md:text-lg">{p.name}</div>
                             <div className="text-[11px] text-slate-500 font-medium tracking-wide">DUPR: {p.dupr}</div>
@@ -200,10 +192,8 @@ export default function TournamentRegistration() {
             )}
           </div>
 
-          {/* 右側：報名表單 */}
           <div className="md:col-span-2 order-2 md:order-1">
             <form onSubmit={handleRegister} className="bg-slate-800 p-6 rounded-3xl border border-slate-700 shadow-2xl md:sticky md:top-8 overflow-hidden relative">
-              {/* 裝飾背光 */}
               <div className="absolute -top-10 -right-10 w-32 h-32 bg-orange-500/10 blur-3xl rounded-full pointer-events-none" />
               
               <h2 className="text-xl font-black mb-6 flex items-center gap-2">
@@ -266,7 +256,6 @@ export default function TournamentRegistration() {
         </div>
       </div>
       
-      {/* Footer 裝飾 */}
       <footer className="mt-20 pb-10 text-center">
         <p className="text-slate-700 text-xs tracking-widest uppercase">七賢國小匹克球積分賽 • Kaohsiung Pickleball</p>
       </footer>
