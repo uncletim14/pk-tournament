@@ -126,33 +126,35 @@ export default function TournamentRegistration() {
         </header>
 
         {/* 比賽時間 */}
-        <div className="flex justify-center mb-4">
-          <div className="bg-orange-500/10 border border-orange-500/30 px-6 py-2 rounded-full shadow-lg shadow-orange-500/5">
-             <span className="text-orange-400 font-black tracking-widest text-lg md:text-xl">比賽時間：6/1 18:00-21:00</span>
+        <div className="flex justify-center mb-6">
+          <div className="bg-orange-500/10 border border-orange-500/30 px-8 py-3 rounded-full shadow-xl">
+             <span className="text-orange-400 font-black tracking-widest text-xl md:text-2xl">比賽時間：6/1 18:00-21:00</span>
           </div>
         </div>
 
         {/* 類別分頁 */}
-        <div className="relative mb-10 group">
-          <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide snap-x">
+        <div className="relative mb-12 group">
+          <div className="flex gap-4 overflow-x-auto pb-6 scrollbar-hide snap-x">
             {categories.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setActiveTab(cat.label)}
-                className={`px-6 py-4 rounded-2xl font-bold transition-all whitespace-nowrap snap-start shrink-0 border-2 flex flex-col items-center gap-1 ${
+                className={`px-8 py-5 rounded-[2rem] font-bold transition-all whitespace-nowrap snap-start shrink-0 border-2 flex flex-col items-center gap-3 ${
                   activeTab === cat.label 
-                  ? 'bg-orange-500 border-orange-400 text-white shadow-lg shadow-orange-500/20' 
+                  ? 'bg-orange-500 border-orange-400 text-white shadow-lg shadow-orange-500/30 scale-105' 
                   : 'bg-slate-800 border-slate-800 text-slate-400 hover:bg-slate-700'
                 }`}
               >
-                <span className="text-lg md:text-xl">{cat.label}</span>
-                <span className={`text-xs md:text-sm font-black ${
-                  cat.enabled 
-                  ? (activeTab === cat.label ? 'text-green-200' : 'text-green-500') 
-                  : (activeTab === cat.label ? 'text-slate-200' : 'text-slate-500')
-                }`}>
-                  {cat.enabled ? '● 有開放報名' : '○ 未開放報名'}
-                </span>
+                <span className="text-xl md:text-2xl tracking-tight">{cat.label}</span>
+                {cat.enabled ? (
+                  <span className="bg-white text-slate-900 px-4 py-1.5 rounded-full text-base md:text-lg font-black shadow-inner ring-2 ring-white/20">
+                    ● 有開放報名
+                  </span>
+                ) : (
+                  <span className={`text-sm md:text-base font-bold ${activeTab === cat.label ? 'text-slate-200' : 'text-slate-500'}`}>
+                    ○ 未開放報名
+                  </span>
+                )}
               </button>
             ))}
           </div>
@@ -160,14 +162,13 @@ export default function TournamentRegistration() {
 
         <div className="flex flex-col md:grid md:grid-cols-5 gap-10">
           
-          {/* 報名清單區域 */}
           <div className="md:col-span-3 order-1 md:order-2">
             <div className="flex justify-between items-end mb-6 px-1">
               <h2 className="text-2xl md:text-3xl font-bold flex items-center gap-3">
                 <span className="w-2.5 h-8 bg-orange-500 rounded-full"></span>
                 目前報名清單
               </h2>
-              <span className="text-sm text-slate-400 font-bold bg-slate-800 px-4 py-1.5 rounded-xl border border-slate-700">
+              <span className="text-sm text-slate-400 font-bold bg-slate-800 px-4 py-2 rounded-xl border border-slate-700">
                 正取剩餘：{currentCategoryInfo?.enabled ? Math.max(0, maxLimit - currentList.length) : '未開放'}
               </span>
             </div>
@@ -190,21 +191,21 @@ export default function TournamentRegistration() {
                   currentList.map((p, index) => {
                     const isWaitlist = index >= maxLimit;
                     return (
-                      <div key={p.id} className="bg-slate-800 border-2 border-slate-700/50 p-5 md:p-6 rounded-[1.5rem] flex justify-between items-center group hover:bg-slate-800/90 transition-all active:scale-[0.99] shadow-xl">
-                        <div className="flex items-center gap-5 md:gap-8">
-                          <div className={`px-5 py-3 rounded-xl flex items-center justify-center shrink-0 min-w-[80px] ${
+                      <div key={p.id} className="bg-slate-800 border-2 border-slate-700/50 p-6 md:p-8 rounded-[2rem] flex justify-between items-center group hover:bg-slate-800/90 transition-all active:scale-[0.99] shadow-xl">
+                        <div className="flex items-center gap-6 md:gap-10">
+                          <div className={`px-6 py-4 rounded-2xl flex items-center justify-center shrink-0 min-w-[90px] ${
                             isWaitlist ? 'bg-amber-500/20 text-amber-500' : 'bg-green-500/20 text-green-500'
                           }`}>
-                            <span className="text-xl md:text-2xl font-black tracking-widest">{isWaitlist ? '備取' : '正取'}</span>
+                            <span className="text-2xl md:text-3xl font-black tracking-widest">{isWaitlist ? '備取' : '正取'}</span>
                           </div>
                           <div>
-                            <div className="font-black text-slate-100 text-2xl md:text-3xl mb-1">{p.name}</div>
-                            <div className="text-xs md:text-sm text-slate-500 font-bold tracking-[0.2em] uppercase">DUPR: {p.dupr}</div>
+                            <div className="font-black text-slate-100 text-2xl md:text-4xl mb-2">{p.name}</div>
+                            <div className="text-sm md:text-base text-slate-500 font-bold tracking-[0.2em] uppercase">DUPR: {p.dupr}</div>
                           </div>
                         </div>
                         <button 
                           onClick={() => handleCancel(p)} 
-                          className="px-5 py-3 md:px-6 md:py-4 rounded-xl text-lg md:text-xl font-black text-slate-500 border-2 border-slate-700 hover:text-red-400 hover:border-red-400/50 hover:bg-red-500/5 transition-all active:scale-95 shrink-0"
+                          className="px-6 py-4 rounded-2xl text-lg md:text-2xl font-black text-slate-500 border-2 border-slate-700 hover:text-red-400 hover:border-red-400/50 hover:bg-red-500/5 transition-all active:scale-95 shrink-0"
                         >
                           取消
                         </button>
@@ -216,14 +217,13 @@ export default function TournamentRegistration() {
             )}
           </div>
 
-          {/* 報名表單區域 */}
           <div className="md:col-span-2 order-2 md:order-1">
-            <form onSubmit={handleRegister} className="bg-slate-800 p-8 rounded-[2.5rem] border-2 border-slate-700 shadow-2xl md:sticky md:top-8 overflow-hidden">
-              <h2 className="text-2xl font-black mb-8 flex items-center gap-3">
+            <form onSubmit={handleRegister} className="bg-slate-800 p-10 rounded-[3rem] border-2 border-slate-700 shadow-2xl md:sticky md:top-8 overflow-hidden">
+              <h2 className="text-2xl font-black mb-10 flex items-center gap-3">
                 {currentCategoryInfo?.enabled ? '✍️ 填寫報名' : '🚫 暫未開放'}
               </h2>
               
-              <div className="space-y-6">
+              <div className="space-y-8">
                 <div className={!currentCategoryInfo?.enabled ? 'opacity-30 pointer-events-none' : ''}>
                   <label className="text-sm font-black text-slate-400 ml-1 mb-2 block tracking-wider uppercase">LINE群內的ID</label>
                   <input 
@@ -232,20 +232,20 @@ export default function TournamentRegistration() {
                     required 
                     value={formData.name} 
                     onChange={e => setFormData({...formData, name: e.target.value})} 
-                    placeholder={currentCategoryInfo?.enabled ? "請輸入LINE ID" : "未開放"} 
-                    className="w-full bg-slate-900 border-2 border-slate-700 rounded-2xl px-6 py-4 focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 outline-none transition-all text-xl font-bold text-slate-100" 
+                    placeholder="請輸入LINE ID" 
+                    className="w-full bg-slate-900 border-2 border-slate-700 rounded-2xl px-6 py-5 focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 outline-none transition-all text-2xl font-bold text-slate-100 placeholder:text-slate-700" 
                   />
                 </div>
                 <div className={!currentCategoryInfo?.enabled ? 'opacity-30 pointer-events-none' : ''}>
-                  <label className="text-sm font-black text-slate-400 ml-1 mb-2 block tracking-wider uppercase">DUPR ID / 數值</label>
+                  <label className="text-sm font-black text-slate-400 ml-1 mb-2 block tracking-wider uppercase">DUPR 完整ID</label>
                   <input 
                     type="text" 
                     disabled={!currentCategoryInfo?.enabled}
                     required 
                     value={formData.dupr} 
                     onChange={e => setFormData({...formData, dupr: e.target.value})} 
-                    placeholder={currentCategoryInfo?.enabled ? "例如: 3.52" : "未開放"} 
-                    className="w-full bg-slate-900 border-2 border-slate-700 rounded-2xl px-6 py-4 focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 outline-none transition-all text-xl font-bold text-slate-100" 
+                    placeholder="請輸入 DUPR ID" 
+                    className="w-full bg-slate-900 border-2 border-slate-700 rounded-2xl px-6 py-5 focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 outline-none transition-all text-2xl font-bold text-slate-100 placeholder:text-slate-700" 
                   />
                 </div>
                 <div className={!currentCategoryInfo?.enabled ? 'opacity-30 pointer-events-none' : ''}>
@@ -259,14 +259,14 @@ export default function TournamentRegistration() {
                     value={formData.edit_code} 
                     onChange={e => setFormData({...formData, edit_code: e.target.value})} 
                     placeholder="密碼" 
-                    className="w-full bg-slate-900 border-2 border-slate-700 rounded-2xl px-6 py-4 focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 outline-none transition-all text-2xl tracking-[0.4em] font-mono font-bold text-slate-100" 
+                    className="w-full bg-slate-900 border-2 border-slate-700 rounded-2xl px-6 py-5 focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 outline-none transition-all text-3xl tracking-[0.4em] font-mono font-bold text-slate-100" 
                   />
                 </div>
                 
                 <button 
                   type="submit" 
                   disabled={!currentCategoryInfo?.enabled}
-                  className={`w-full font-black py-5 rounded-2xl transition-all shadow-xl text-2xl mt-4 ${
+                  className={`w-full font-black py-6 rounded-2xl transition-all shadow-xl text-2xl mt-6 ${
                     currentCategoryInfo?.enabled 
                     ? 'bg-gradient-to-br from-orange-500 to-red-600 text-white hover:brightness-110 active:scale-95 shadow-orange-900/40' 
                     : 'bg-slate-700 text-slate-500 cursor-not-allowed shadow-none opacity-50'
@@ -281,8 +281,8 @@ export default function TournamentRegistration() {
         </div>
       </div>
       
-      <footer className="mt-24 pb-12 text-center">
-        <p className="text-slate-600 text-sm font-black tracking-[0.3em] uppercase">七賢國小匹克球積分賽 • KAOHSIUNG PICKLEBALL</p>
+      <footer className="mt-28 pb-16 text-center">
+        <p className="text-slate-600 text-sm font-black tracking-[0.4em] uppercase">七賢國小匹克球積分賽 • KAOHSIUNG PICKLEBALL</p>
       </footer>
     </main>
   );
