@@ -125,10 +125,10 @@ export default function TournamentRegistration() {
           <p className="text-slate-400 text-base md:text-lg tracking-wide font-medium">專業積分、熱血對戰，展現您的最強實力！</p>
         </header>
 
-        {/* 比賽時間獨立顯示 */}
+        {/* 比賽時間 */}
         <div className="flex justify-center mb-4">
-          <div className="bg-orange-500/10 border border-orange-500/30 px-6 py-2 rounded-full">
-             <span className="text-orange-400 font-black tracking-widest text-lg">比賽時間：6/1 18:00-21:00</span>
+          <div className="bg-orange-500/10 border border-orange-500/30 px-6 py-2 rounded-full shadow-lg shadow-orange-500/5">
+             <span className="text-orange-400 font-black tracking-widest text-lg md:text-xl">比賽時間：6/1 18:00-21:00</span>
           </div>
         </div>
 
@@ -180,7 +180,7 @@ export default function TournamentRegistration() {
               <div className="space-y-4">
                 {!currentCategoryInfo?.enabled ? (
                   <div className="bg-slate-800/50 border-2 border-dashed border-slate-700 p-20 rounded-[2rem] text-center text-slate-500 text-xl font-bold italic">
-                    此組別本次活動尚未開放報名
+                    此組別目前未開放報名
                   </div>
                 ) : currentList.length === 0 ? (
                   <div className="bg-slate-800/50 border-2 border-dashed border-slate-700 p-20 rounded-[2rem] text-center text-slate-600 text-xl font-bold">
@@ -225,31 +225,31 @@ export default function TournamentRegistration() {
               
               <div className="space-y-6">
                 <div className={!currentCategoryInfo?.enabled ? 'opacity-30 pointer-events-none' : ''}>
-                  <label className="text-sm font-black text-slate-400 ml-1 mb-2 block tracking-wider uppercase">選手姓名</label>
+                  <label className="text-sm font-black text-slate-400 ml-1 mb-2 block tracking-wider uppercase">LINE群內的ID</label>
                   <input 
                     type="text" 
                     disabled={!currentCategoryInfo?.enabled}
                     required 
                     value={formData.name} 
                     onChange={e => setFormData({...formData, name: e.target.value})} 
-                    placeholder={currentCategoryInfo?.enabled ? "請輸入真實姓名" : "請選取開放組別"} 
+                    placeholder={currentCategoryInfo?.enabled ? "請輸入LINE ID" : "未開放"} 
                     className="w-full bg-slate-900 border-2 border-slate-700 rounded-2xl px-6 py-4 focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 outline-none transition-all text-xl font-bold text-slate-100" 
                   />
                 </div>
                 <div className={!currentCategoryInfo?.enabled ? 'opacity-30 pointer-events-none' : ''}>
-                  <label className="text-sm font-black text-slate-400 ml-1 mb-2 block tracking-wider uppercase">DUPR ID</label>
+                  <label className="text-sm font-black text-slate-400 ml-1 mb-2 block tracking-wider uppercase">DUPR ID / 數值</label>
                   <input 
                     type="text" 
                     disabled={!currentCategoryInfo?.enabled}
                     required 
                     value={formData.dupr} 
                     onChange={e => setFormData({...formData, dupr: e.target.value})} 
-                    placeholder={currentCategoryInfo?.enabled ? "例如: 3.52" : "尚未開放"} 
+                    placeholder={currentCategoryInfo?.enabled ? "例如: 3.52" : "未開放"} 
                     className="w-full bg-slate-900 border-2 border-slate-700 rounded-2xl px-6 py-4 focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 outline-none transition-all text-xl font-bold text-slate-100" 
                   />
                 </div>
                 <div className={!currentCategoryInfo?.enabled ? 'opacity-30 pointer-events-none' : ''}>
-                  <label className="text-sm font-black text-slate-400 ml-1 mb-2 block tracking-wider uppercase">設定 4 碼密碼</label>
+                  <label className="text-sm font-black text-slate-400 ml-1 mb-2 block tracking-wider uppercase">設定 4 碼密碼 (取消報名用)</label>
                   <input 
                     type="password" 
                     disabled={!currentCategoryInfo?.enabled}
@@ -272,7 +272,7 @@ export default function TournamentRegistration() {
                     : 'bg-slate-700 text-slate-500 cursor-not-allowed shadow-none opacity-50'
                   }`}
                 >
-                  {currentCategoryInfo?.enabled ? '確認報名' : '組別未開放'}
+                  {currentCategoryInfo?.enabled ? '確認報名' : '本組未開放'}
                 </button>
               </div>
             </form>
