@@ -18,9 +18,9 @@ type Participant = {
 
 export default function TournamentRegistration() {
   const categories = [
-    { id: 'cat1', label: '3.29 以下', max: 5, enabled: true },
-    { id: 'cat2', label: '3.3 - 3.9', max: 5, enabled: false },
-    { id: 'cat3', label: '4.0 以上', max: 5, enabled: false },
+    { id: 'cat1', label: 'NR-2.799', max: 5, enabled: true },
+    { id: 'cat2', label: '2.8-3.299', max: 5, enabled: false },
+    { id: 'cat3', label: '3.3-3.99', max: 5, enabled: false },
     { id: 'cat4', label: '女性專場', max: 5, enabled: false },
   ];
 
@@ -122,14 +122,13 @@ export default function TournamentRegistration() {
           <p className="text-slate-400 text-sm md:text-lg font-medium">專業積分、熱血對戰，展現您的最強實力！</p>
         </header>
 
-        {/* 修正後的比賽時間：6/6 (六) */}
         <div className="flex justify-center mb-8">
           <div className="bg-orange-500/10 border border-orange-500/30 px-6 py-2.5 rounded-full shadow-lg shadow-orange-500/5">
              <span className="text-orange-400 font-black tracking-widest text-lg md:text-2xl">比賽時間：6/6 (六) 18:00-21:00</span>
           </div>
         </div>
 
-        {/* 2x2 網格佈局：填滿寬度，取消滑動 */}
+        {/* 2x2 網格佈局：更新分組名稱 */}
         <div className="mb-10">
           <div className="grid grid-cols-2 gap-3 md:gap-4">
             {categories.map((cat) => (
@@ -220,15 +219,15 @@ export default function TournamentRegistration() {
               <div className="space-y-6">
                 <div className={!currentCategoryInfo?.enabled ? 'opacity-30 pointer-events-none' : ''}>
                   <label className="text-xs font-black text-slate-400 ml-1 mb-2 block tracking-wider uppercase">LINE群內的ID</label>
-                  <input type="text" disabled={!currentCategoryInfo?.enabled} required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="請輸入 LINE ID" className="w-full bg-slate-900 border-2 border-slate-700 rounded-2xl px-5 py-4 focus:border-orange-500 outline-none text-xl font-bold text-slate-100" />
+                  <input type="text" disabled={!currentCategoryInfo?.enabled} required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="請輸入 LINE ID" className="w-full bg-slate-900 border-2 border-slate-700 rounded-2xl px-5 py-4 focus:border-orange-500 outline-none text-xl font-bold text-slate-100 placeholder:text-slate-700" />
                 </div>
                 <div className={!currentCategoryInfo?.enabled ? 'opacity-30 pointer-events-none' : ''}>
                   <label className="text-xs font-black text-slate-400 ml-1 mb-2 block tracking-wider uppercase">DUPR 完整ID</label>
-                  <input type="text" disabled={!currentCategoryInfo?.enabled} required value={formData.dupr} onChange={e => setFormData({...formData, dupr: e.target.value})} placeholder="請輸入 DUPR ID" className="w-full bg-slate-900 border-2 border-slate-700 rounded-2xl px-5 py-4 focus:border-orange-500 outline-none text-xl font-bold text-slate-100" />
+                  <input type="text" disabled={!currentCategoryInfo?.enabled} required value={formData.dupr} onChange={e => setFormData({...formData, dupr: e.target.value})} placeholder="請輸入 DUPR ID" className="w-full bg-slate-900 border-2 border-slate-700 rounded-2xl px-5 py-4 focus:border-orange-500 outline-none text-xl font-bold text-slate-100 placeholder:text-slate-700" />
                 </div>
                 <div className={!currentCategoryInfo?.enabled ? 'opacity-30 pointer-events-none' : ''}>
                   <label className="text-xs font-black text-slate-400 ml-1 mb-2 block tracking-wider uppercase">4 碼密碼 (取消報名用)</label>
-                  <input type="password" disabled={!currentCategoryInfo?.enabled} maxLength={4} inputMode="numeric" required value={formData.edit_code} onChange={e => setFormData({...formData, edit_code: e.target.value})} placeholder="設定密碼" className="w-full bg-slate-900 border-2 border-slate-700 rounded-2xl px-5 py-4 focus:border-orange-500 outline-none text-2xl tracking-[0.4em] font-mono font-bold text-slate-100" />
+                  <input type="password" disabled={!currentCategoryInfo?.enabled} maxLength={4} inputMode="numeric" required value={formData.edit_code} onChange={e => setFormData({...formData, edit_code: e.target.value})} placeholder="設定密碼" className="w-full bg-slate-900 border-2 border-slate-700 rounded-2xl px-5 py-4 focus:border-orange-500 outline-none text-2xl tracking-[0.4em] font-mono font-bold text-slate-100 placeholder:text-slate-700" />
                 </div>
                 <button type="submit" disabled={!currentCategoryInfo?.enabled} className={`w-full font-black py-5 rounded-2xl transition-all shadow-xl text-2xl mt-4 ${currentCategoryInfo?.enabled ? 'bg-gradient-to-br from-orange-500 to-red-600 text-white active:scale-95 shadow-orange-900/40' : 'bg-slate-700 text-slate-500 cursor-not-allowed shadow-none opacity-50'}`}>
                   {currentCategoryInfo?.enabled ? '確認報名' : '組別未開放'}
